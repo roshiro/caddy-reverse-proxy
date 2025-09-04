@@ -35,26 +35,7 @@
 	}
 
 	handle_path /image_api* {
-		reverse_proxy {
-			to {$BACKEND_DOMAIN}:{$BACKEND_PORT}
-			import lb_settings
-			health_uri /health
-			health_interval 10s
-			health_timeout 5s
-			import passive_health_checks
-			transport http {
-				compression off  # Sometimes helps with troubleshooting
-			}
-			@error status 5xx
-			handle_response @error {
-				header +X-Proxy-Error "true"
-				log {
-					output stdout
-					format console
-					level ERROR
-				}
-			}
-		}
+		reverse_proxy {$BACKEND_DOMAIN}:{$BACKEND_PORT}
 	}
 
 	handle /* {
